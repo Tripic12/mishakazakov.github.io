@@ -1,1 +1,2 @@
-###### Misha Kazakov
+# Misha Kazakov
+##Independet Game Developer
