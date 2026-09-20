@@ -426,30 +426,44 @@ html.project-modal-open { overflow: hidden; }
    tags and Live Demo button are hidden on the card: the tags feed the
    "Software used" list and the Live Demo link now sits in the project
    window. To bring the old card content back, delete the "display: none"
-   rule below.
+   rule near the bottom of this block.
+
+   The layout rules use "#projects#projects" (the same id twice) and
+   !important on purpose: that raises their priority above the template's
+   own stylesheet, which otherwise forces one project per row.
    (Scoped to #projects so the Skills grid is not affected.)
 ------------------------------------------------------------------ */
-#projects .animfolio-grid {
+#projects#projects .animfolio-grid {
 	--project-gap: clamp(1rem, 3vw, 2.5rem);
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: var(--project-gap);
-	max-width: 860px;
-	margin-inline: auto;
+	display: grid !important;
+	grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+	grid-auto-flow: row !important;
+	gap: var(--project-gap) !important;
+	max-width: 860px !important;
+	margin-inline: auto !important;
 }
-#projects .animfolio-project {
-	display: block;
-	padding: 0;
-	border: 0;
-	background: none;
-	box-shadow: none;
+#projects#projects .animfolio-grid > .animfolio-project {
+	position: relative !important;
+	top: auto !important;
+	display: block !important;
+	grid-column: auto !important;
+	grid-row: auto !important;
+	width: auto !important;
+	min-width: 0 !important;
+	max-width: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	background: none !important;
+	box-shadow: none !important;
 }
 /* an odd last card sits centred under the pair above it instead of hugging the left */
-#projects .animfolio-grid > .animfolio-project:last-child:nth-child(odd) {
-	grid-column: 1 / -1;
-	justify-self: center;
-	width: calc((100% - var(--project-gap)) / 2);
+#projects#projects .animfolio-grid > .animfolio-project:last-child:nth-child(odd) {
+	grid-column: 1 / -1 !important;
+	justify-self: center !important;
+	width: calc((100% - var(--project-gap)) / 2) !important;
 }
+
 #projects .animfolio-project__description,
 #projects .animfolio-project__stack,
 #projects .animfolio-project__links { display: none; }
@@ -475,8 +489,8 @@ html.project-modal-open { overflow: hidden; }
 }
 
 @media (max-width: 320px) {
-	#projects .animfolio-grid { grid-template-columns: 1fr; }
-	#projects .animfolio-grid > .animfolio-project:last-child:nth-child(odd) { grid-column: auto; width: auto; }
+	#projects#projects .animfolio-grid { grid-template-columns: 1fr !important; }
+	#projects#projects .animfolio-grid > .animfolio-project:last-child:nth-child(odd) { grid-column: auto !important; width: auto !important; }
 }
 </style>
 </head>
