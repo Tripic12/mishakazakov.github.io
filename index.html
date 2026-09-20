@@ -493,6 +493,35 @@ html.project-modal-open { overflow: hidden; }
 	#projects#projects .animfolio-grid > .animfolio-project:last-child:nth-child(odd) { grid-column: auto !important; width: auto !important; }
 }
 </style>
+<style id="about-split-layout">
+#about .animfolio-about {
+	display: grid !important;
+	grid-template-columns: 1fr 1fr;
+	column-gap: 3rem;
+	row-gap: 1.5rem;
+	align-items: center;
+	max-width: 1100px;
+	margin: 0 auto;
+	text-align: left !important;
+}
+#about .animfolio-about__image { grid-column: 2; grid-row: 1 / span 2; }
+#about .animfolio-about__image img {
+	width: 100%;
+	max-height: 600px;
+	object-fit: cover;
+	height: auto;
+	display: block;
+	border-radius: 12px;
+}
+#about .animfolio-about__bio { grid-column: 1; grid-row: 1; align-self: end; text-align: left !important; }
+#about .animfolio-about__fun-facts { grid-column: 1; grid-row: 2; align-self: start; justify-content: flex-start !important; }
+@media (max-width: 768px) {
+	#about .animfolio-about { grid-template-columns: 1fr; }
+	#about .animfolio-about__image,
+	#about .animfolio-about__bio,
+	#about .animfolio-about__fun-facts { grid-column: 1; grid-row: auto; }
+}
+</style>
 </head>
 <body>
 <!-- ============================================================
