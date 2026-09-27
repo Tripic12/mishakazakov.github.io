@@ -346,6 +346,49 @@ html.project-modal-open { overflow: hidden; }
 	border: 0;
 	background: #000;
 }
+.project-modal .project-modal__media > img {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: contain; /* whole image visible, letterboxed on black */
+	background: #000;
+}
+.project-modal .project-modal__nav {
+	position: absolute;
+	top: 50%;
+	z-index: 2;
+	display: grid;
+	place-items: center;
+	width: 44px;
+	height: 44px;
+	margin-top: -22px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: rgba(0, 0, 0, .55);
+	color: #fff;
+	cursor: pointer;
+	transition: background .15s ease, transform .15s ease;
+}
+.project-modal .project-modal__nav:hover { background: var(--animfolio-accent, #E8526E); color: #14110f; }
+.project-modal .project-modal__nav--prev { left: 12px; }
+.project-modal .project-modal__nav--next { right: 12px; }
+.project-modal .project-modal__nav svg { width: 22px; height: 22px; }
+.project-modal .project-modal__count {
+	position: absolute;
+	bottom: 12px;
+	left: 50%;
+	z-index: 2;
+	transform: translateX(-50%);
+	padding: .2rem .7rem;
+	border-radius: 100px;
+	background: rgba(0, 0, 0, .55);
+	color: #fff;
+	font-size: .85rem;
+	pointer-events: none;
+}
 .project-modal .project-modal__placeholder {
 	position: absolute;
 	inset: 0;
@@ -734,7 +777,8 @@ html.project-modal-open { overflow: hidden; }
 </div><!-- .animfolio-inner --></section><section id="projects" class="animfolio-section animfolio-section--projects animfolio-section--align-center" data-animfolio-section="projects"><div class="animfolio-inner"><div class="animfolio-section__header"><h2 class="animfolio-section__title">Featured Projects</h2></div>
 <!-- Project windows: clicking a project card opens its details window.
      Optional attributes on each project's <div class="animfolio-project ..."> :
-       data-trailer="https://youtu.be/XXXXXXXXXXX"        YouTube, Vimeo, or a video file path (.mp4 / .webm)
+       data-trailer="https://youtu.be/XXXXXXXXXXX"        YouTube, Vimeo, a video file (.mp4 / .webm) or an image (.png / .jpg / .gif / .webp)
+                                                           several items: separate with |  e.g. "./assets/images/a.png|./assets/images/b.jpg|https://youtu.be/XXXXXXXXXXX"
        data-software="Unity|Blender|Substance Painter"     separate items with |  (default: the tags on the card)
        data-contribution="What I built|What I designed"    separate items with |
 -->
@@ -842,7 +886,8 @@ html.project-modal-open { overflow: hidden; }
 	</div><!-- .animfolio-inner --></section><section id="projects" class="animfolio-section animfolio-section--projects animfolio-section--align-center" data-animfolio-section="projects"><div class="animfolio-inner"><div class="animfolio-section__header"><h2 class="animfolio-section__title">Additional Projects</h2></div>
 <!-- Project windows: clicking a project card opens its details window.
      Optional attributes on each project's <div class="animfolio-project ..."> :
-       data-trailer="https://youtu.be/XXXXXXXXXXX"        YouTube, Vimeo, or a video file path (.mp4 / .webm)
+       data-trailer="https://youtu.be/XXXXXXXXXXX"        YouTube, Vimeo, a video file (.mp4 / .webm) or an image (.png / .jpg / .gif / .webp)
+                                                           several items: separate with |  e.g. "./assets/images/a.png|./assets/images/b.jpg|https://youtu.be/XXXXXXXXXXX"
        data-software="Unity|Blender|Substance Painter"     separate items with |  (default: the tags on the card)
        data-contribution="What I built|What I designed"    separate items with |
 -->
@@ -1164,18 +1209,25 @@ var animfolioSettings = {"animationIntensity":"medium","respectReducedMotion":"1
 		m = url.match(/vimeo\.com\/(?:video\/)?(\d+)(?:\/([a-z0-9]+))?/i);
 		if (m) return { type: 'iframe', src: 'https://player.vimeo.com/video/' + m[1] + (m[2] ? '?h=' + m[2] : '') };
 		if (/\.(mp4|webm|ogv|mov)(\?.*)?$/i.test(url)) return { type: 'video', src: url };
+		if (/\.(png|jpe?g|gif|webp|avif|svg)(\?.*)?$/i.test(url)) return { type: 'image', src: url };
 		if (/^https?:\/\//i.test(url)) return { type: 'iframe', src: url };
 		return null;
 	}
 
-	function showTrailer(url, title) {
-		trailerSlot.textContent = '';
-		var trailer = parseTrailer(url);
+	// data-trailer can hold one or more items separated by |
+	// (YouTube, Vimeo, .mp4/.webm, or images: .png .jpg .gif .webp).
+	// Several items get arrows to flip through them.
+	var galleryStep = null;
+	var trailerHeading = modal.querySelector('.project-modal__trailer .project-modal__heading');
+
+	function buildMedia(trailer, title, index, total) {
 		var el;
-		if (!trailer) {
-			el = document.createElement('div');
-			el.className = 'project-modal__placeholder';
-			el.innerHTML = '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="24" r="20"></circle><path d="M20 16l13 8-13 8z"></path></svg><span>Trailer coming soon</span>';
+		var label = title + (total > 1 ? ' (' + (index + 1) + ' of ' + total + ')' : '');
+		if (trailer.type === 'image') {
+			el = document.createElement('img');
+			el.src = trailer.src;
+			el.alt = label;
+			el.decoding = 'async';
 		} else if (trailer.type === 'video') {
 			el = document.createElement('video');
 			el.controls = true;
@@ -1185,12 +1237,68 @@ var animfolioSettings = {"animationIntensity":"medium","respectReducedMotion":"1
 		} else {
 			el = document.createElement('iframe');
 			el.src = trailer.src;
-			el.title = 'Trailer: ' + title;
+			el.title = 'Trailer: ' + label;
 			el.allow = 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
 			el.allowFullscreen = true;
 			el.referrerPolicy = 'strict-origin-when-cross-origin';
 		}
-		trailerSlot.appendChild(el);
+		return el;
+	}
+
+	function navButton(dir) {
+		var b = document.createElement('button');
+		b.type = 'button';
+		b.className = 'project-modal__nav project-modal__nav--' + dir;
+		b.setAttribute('aria-label', dir === 'prev' ? 'Previous' : 'Next');
+		b.innerHTML = dir === 'prev'
+			? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>'
+			: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>';
+		return b;
+	}
+
+	function showTrailer(url, title) {
+		trailerSlot.textContent = '';
+		galleryStep = null;
+		var items = splitList(url).map(parseTrailer).filter(Boolean);
+
+		// Heading: "Trailer" when there is a video, "Gallery" when it's only images
+		if (trailerHeading) {
+			var onlyImages = items.length && items.every(function (t) { return t.type === 'image'; });
+			trailerHeading.textContent = onlyImages ? 'Gallery' : 'Trailer';
+		}
+
+		if (!items.length) {
+			var ph = document.createElement('div');
+			ph.className = 'project-modal__placeholder';
+			ph.innerHTML = '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="24" r="20"></circle><path d="M20 16l13 8-13 8z"></path></svg><span>Trailer coming soon</span>';
+			trailerSlot.appendChild(ph);
+			return;
+		}
+
+		var index = 0;
+		var current = null;
+		var count = null;
+		function show(i) {
+			index = (i + items.length) % items.length;
+			if (current) current.remove(); // removing a video/iframe also stops it
+			current = buildMedia(items[index], title, index, items.length);
+			trailerSlot.insertBefore(current, trailerSlot.firstChild);
+			if (count) count.textContent = (index + 1) + ' / ' + items.length;
+		}
+
+		if (items.length > 1) {
+			var prev = navButton('prev');
+			var next = navButton('next');
+			count = document.createElement('div');
+			count.className = 'project-modal__count';
+			prev.addEventListener('click', function () { show(index - 1); });
+			next.addEventListener('click', function () { show(index + 1); });
+			trailerSlot.appendChild(prev);
+			trailerSlot.appendChild(next);
+			trailerSlot.appendChild(count);
+			galleryStep = function (d) { show(index + d); };
+		}
+		show(0);
 	}
 
 	/* ---- Lists (software / contribution) ---- */
@@ -1291,6 +1399,7 @@ var animfolioSettings = {"animationIntensity":"medium","respectReducedMotion":"1
 		if (!modal.classList.contains('is-open')) return;
 		modal.classList.remove('is-open');
 		trailerSlot.textContent = ''; // removes the player, which stops the video
+		galleryStep = null;
 		setPageInert(false);
 		root.classList.remove('project-modal-open');
 		document.body.style.paddingRight = '';
@@ -1310,6 +1419,10 @@ var animfolioSettings = {"animationIntensity":"medium","respectReducedMotion":"1
 	});
 	document.addEventListener('keydown', function (e) {
 		if (e.key === 'Escape' && modal.classList.contains('is-open')) close();
+		if (galleryStep && modal.classList.contains('is-open') && !/^(INPUT|TEXTAREA|IFRAME)$/.test(document.activeElement.tagName)) {
+			if (e.key === 'ArrowLeft') galleryStep(-1);
+			if (e.key === 'ArrowRight') galleryStep(1);
+		}
 	});
 
 	enhanceCards();
