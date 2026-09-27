@@ -411,6 +411,18 @@ html.project-modal-open { overflow: hidden; }
 }
 @media print { .project-modal { display: none !important; } }
 </style>
+<style id="hero-background">
+/* Main page (hero) background image. The see-through wash on top uses the
+   page's own background color, so the name and buttons stay readable in both
+   light and dark mode. Raise the 70% to fade the image more, lower it to show
+   more of the image. */
+.animfolio-container--format-02 #hero.animfolio-section--hero {
+	background:
+		linear-gradient(color-mix(in srgb, var(--animfolio-bg, #f5f5f5) 70%, transparent), color-mix(in srgb, var(--animfolio-bg, #f5f5f5) 70%, transparent)),
+		url('./assets/images/bg_porfolio.jpg') center / cover no-repeat,
+		var(--animfolio-bg, #f5f5f5);
+}
+</style>
 <style id="project-grid-styles">
 /* ------------------------------------------------------------------
    Featured Projects: compact thumbnails, two per row.
