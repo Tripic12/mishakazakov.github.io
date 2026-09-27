@@ -387,19 +387,8 @@ html.project-modal-open { overflow: hidden; }
 }
 
 .project-modal .project-modal__actions { margin-top: 1.5rem; }
-.project-modal .project-modal__link {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	padding: .7rem 1.4rem;
-	border-radius: var(--animfolio-radius-sm, 6px);
-	background: var(--animfolio-accent, #E8526E);
-	color: var(--animfolio-on-accent, #14110f);
-	font-weight: 600;
-	text-decoration: none;
-	transition: background .15s ease;
-}
-.project-modal .project-modal__link:hover { background: var(--animfolio-accent-hover, #de4864); }
+/* Live Demo uses the same classes as the hero "View My Work" button
+   (animfolio-button animfolio-button--primary), so it looks identical. */
 
 @media (max-width: 820px) {
 	.project-modal { padding: .5rem; }
@@ -1228,7 +1217,7 @@ var animfolioSettings = {"animationIntensity":"medium","respectReducedMotion":"1
 		var href = source ? source.getAttribute('href') : '';
 		if (!href || href === '#') { linkSlot.hidden = true; return; }
 		var a = document.createElement('a');
-		a.className = 'project-modal__link';
+		a.className = 'animfolio-button animfolio-button--primary project-modal__link';
 		a.href = href;
 		a.target = '_blank';
 		a.rel = 'noopener noreferrer';
