@@ -493,7 +493,7 @@ html.project-modal-open { overflow: hidden; }
 	margin: 0 auto;
 	text-align: left !important;
 }
-#about .animfolio-about__image { grid-column: 2; grid-row: 1 / span 2; }
+#about .animfolio-about__image { grid-column: 2; grid-row: 1 / span 3; }
 #about .animfolio-about__languages {
 	margin: 0.75rem 0 0;
 	text-align: center;
@@ -510,11 +510,79 @@ html.project-modal-open { overflow: hidden; }
 }
 #about .animfolio-about__bio { grid-column: 1; grid-row: 1; align-self: end; text-align: left !important; }
 #about .animfolio-about__fun-facts { grid-column: 1; grid-row: 2; align-self: start; justify-content: flex-start !important; }
+/* ---- CV: preview + Download button under the About text ---- */
+#about .about-cv {
+	grid-column: 1;
+	grid-row: 3;
+	align-self: start;
+	display: flex;
+	align-items: center;
+	gap: 1.5rem;
+	margin-top: .5rem;
+}
+#about .about-cv__preview {
+	position: relative;
+	flex: none;
+	width: 130px;
+	padding: 0;
+	border: 1px solid var(--animfolio-border-strong, rgba(0, 0, 0, .2));
+	border-radius: 8px;
+	overflow: hidden;
+	background: #fff;
+	cursor: zoom-in;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, .12);
+	transition: transform .2s ease, box-shadow .2s ease;
+}
+#about .about-cv__preview img { display: block; width: 100%; height: auto; }
+#about .about-cv__preview:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 10px 26px rgba(0, 0, 0, .2);
+}
+#about .about-cv__preview:focus-visible {
+	outline: 3px solid var(--animfolio-accent, #E8526E);
+	outline-offset: 3px;
+}
+#about .about-cv__zoom {
+	position: absolute;
+	right: 6px;
+	bottom: 6px;
+	display: grid;
+	place-items: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background: var(--animfolio-accent, #E8526E);
+	color: var(--animfolio-on-accent, #14110f);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+}
+#about .about-cv__zoom svg { width: 16px; height: 16px; }
+#about .about-cv__title {
+	margin: 0 0 .25rem;
+	font-family: var(--animfolio-font-heading, Georgia, serif);
+	font-size: 1.25rem;
+	font-weight: 700;
+}
+#about .about-cv__hint { margin: 0 0 1rem; font-size: .95rem; opacity: .75; }
+
 @media (max-width: 768px) {
 	#about .animfolio-about { grid-template-columns: 1fr; }
 	#about .animfolio-about__image,
 	#about .animfolio-about__bio,
-	#about .animfolio-about__fun-facts { grid-column: 1; grid-row: auto; }
+	#about .animfolio-about__fun-facts,
+	#about .about-cv { grid-column: 1; grid-row: auto; }
+}
+
+/* ---- CV viewer (reuses the project window look, narrower to suit a page) ---- */
+.project-modal--cv .project-modal__dialog { width: min(960px, 100%); }
+.project-modal--cv .project-modal__header { align-items: center; flex-wrap: wrap; }
+.project-modal--cv .cv-modal__actions { display: flex; align-items: center; gap: .75rem; margin-left: auto; }
+.project-modal--cv .cv-modal__page {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: 8px;
+	border: 1px solid var(--animfolio-border-strong, rgba(0, 0, 0, .2));
+	background: #fff;
 }
 </style>
 </head>
@@ -526,7 +594,22 @@ html.project-modal-open { overflow: hidden; }
      ============================================================ -->
 <script>window.ANIMFOLIO_CONTACT_EMAIL = "mishakazakov333@gmail.com";</script>
 
-<div class="animfolio-container animfolio-container--light animfolio-container--format-02 animfolio-container--one-page" data-animfolio-scheme="light" data-animfolio-format="format-02-designer" data-animfolio-intensity="medium"><a href="#hero" class="animfolio-skip-link">Skip to main content</a><!-- Project window (opened by clicking a card in Featured Projects) -->
+<div class="animfolio-container animfolio-container--light animfolio-container--format-02 animfolio-container--one-page" data-animfolio-scheme="light" data-animfolio-format="format-02-designer" data-animfolio-intensity="medium"><a href="#hero" class="animfolio-skip-link">Skip to main content</a><!-- CV viewer (opened by clicking the CV preview in About) -->
+<div class="project-modal project-modal--cv" id="cv-modal">
+	<div class="project-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="cv-modal-title">
+		<div class="project-modal__header">
+			<h2 class="project-modal__title" id="cv-modal-title">My CV</h2>
+			<div class="cv-modal__actions">
+				<a href="./assets/docs/Misha_Kazakov_CV.pdf" download="Misha_Kazakov_CV.pdf" class="animfolio-button animfolio-button--primary">Download CV</a>
+				<button type="button" class="project-modal__close" aria-label="Close CV">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+				</button>
+			</div>
+		</div>
+		<img class="cv-modal__page" data-src="./assets/images/cv-page.jpg" alt="Misha Kazakov's CV: skills, experience, education, interests and contact details" width="1400" height="1979">
+	</div>
+</div>
+<!-- Project window (opened by clicking a card in Featured Projects) -->
 <div class="project-modal" id="project-modal">
 	<div class="project-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="project-modal-title">
 		<div class="project-modal__header">
@@ -836,141 +919,20 @@ html.project-modal-open { overflow: hidden; }
 							<div class="animfolio-about__fun-fact animfolio-stagger__item">
 					Bouldering				</div>
 					</div>
+		<div class="about-cv">
+			<button type="button" class="about-cv__preview" id="cv-open" aria-label="View my CV full screen">
+				<img src="./assets/images/cv-thumb.jpg" alt="" width="360" height="509" loading="lazy" decoding="async">
+				<span class="about-cv__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4M11 8v6M8 11h6"></path></svg></span>
+			</button>
+			<div class="about-cv__text">
+				<p class="about-cv__title">My CV</p>
+				<p class="about-cv__hint">Click the page to view it full size.</p>
+				<a href="./assets/docs/Misha_Kazakov_CV.pdf" download="Misha_Kazakov_CV.pdf" class="animfolio-button animfolio-button--primary">Download CV</a>
+			</div>
+		</div>
 	</div>
 
-</div><!-- .animfolio-inner --></section><section id="skills" class="animfolio-section animfolio-section--skills animfolio-section--align-center" data-animfolio-section="skills"><div class="animfolio-inner"><div class="animfolio-section__header"><h2 class="animfolio-section__title">Skills</h2></div>
-<div class="animfolio-skills animfolio-skills--bars" data-animfolio-animate="fade-up">
-
-			<!-- Progress Bars -->
-					<div class="animfolio-grid animfolio-grid--2 animfolio-stagger" data-animfolio-stagger="0.1">
-									<div class="animfolio-skills__category animfolio-stagger__item">
-						<h3 class="animfolio-skills__category-title">Design Tools</h3>
-						<div class="animfolio-skills__list">
-															<div class="animfolio-skills__item">
-									<div class="animfolio-skills__label">
-										<span>Blender </span>
-										<span class="animfolio-skills__value"> 67%</span>
-									</div>
-									<div class="animfolio-skills__bar">
-										<div class="animfolio-skills__bar-fill" style="width: 95%"></div>
-									</div>
-								</div>
-															<div class="animfolio-skills__item">
-									<div class="animfolio-skills__label">
-										<span>Adobe Photoshop</span>
-										<span class="animfolio-skills__value">90%</span>
-									</div>
-									<div class="animfolio-skills__bar">
-										<div class="animfolio-skills__bar-fill" style="width: 90%"></div>
-									</div>
-								</div>
-															<div class="animfolio-skills__item">
-									<div class="animfolio-skills__label">
-										<span>Adobe Illustrator</span>
-										<span class="animfolio-skills__value">85%</span>
-									</div>
-									<div class="animfolio-skills__bar">
-										<div class="animfolio-skills__bar-fill" style="width: 85%"></div>
-									</div>
-								</div>
-															<div class="animfolio-skills__item">
-									<div class="animfolio-skills__label">
-										<span>Sketch</span>
-										<span class="animfolio-skills__value">80%</span>
-									</div>
-									<div class="animfolio-skills__bar">
-										<div class="animfolio-skills__bar-fill" style="width: 80%"></div>
-									</div>
-								</div>
-													</div>
-					</div>
-									<div class="animfolio-skills__category animfolio-stagger__item">
-						<h3 class="animfolio-skills__category-title">Design Skills</h3>
-						<div class="animfolio-skills__list">
-															<div class="animfolio-skills__item">
-									<div class="animfolio-skills__label">
-										<span>UI/UX Design</span>
-										<span class="animfolio-skills__value">95%</span>
-									</div>
-									<div class="animfolio-skills__bar">
-										<div class="animfolio-skills__bar-fill" style="width: 95%"></div>
-									</div>
-								</div>
-															<div class="animfolio-skills__item">
-									<div class="animfolio-skills__label">
-										<span>Typography</span>
-										<span class="animfolio-skills__value">90%</span>
-									</div>
-									<div class="animfolio-skills__bar">
-										<div class="animfolio-skills__bar-fill" style="width: 90%"></div>
-									</div>
-								</div>
-															<div class="animfolio-skills__item">
-									<div class="animfolio-skills__label">
-										<span>Color Theory</span>
-										<span class="animfolio-skills__value">88%</span>
-									</div>
-									<div class="animfolio-skills__bar">
-										<div class="animfolio-skills__bar-fill" style="width: 88%"></div>
-									</div>
-								</div>
-															<div class="animfolio-skills__item">
-									<div class="animfolio-skills__label">
-										<span>Design Systems</span>
-										<span class="animfolio-skills__value">85%</span>
-									</div>
-									<div class="animfolio-skills__bar">
-										<div class="animfolio-skills__bar-fill" style="width: 85%"></div>
-									</div>
-								</div>
-															<div class="animfolio-skills__item">
-									<div class="animfolio-skills__label">
-										<span>AI Tools / Prompt Engineering</span>
-										<span class="animfolio-skills__value">78%</span>
-									</div>
-									<div class="animfolio-skills__bar">
-										<div class="animfolio-skills__bar-fill" style="width: 78%"></div>
-									</div>
-								</div>
-													</div>
-					</div>
-									<div class="animfolio-skills__category animfolio-stagger__item">
-						<h3 class="animfolio-skills__category-title">Prototyping</h3>
-						<div class="animfolio-skills__list">
-															<div class="animfolio-skills__item">
-									<div class="animfolio-skills__label">
-										<span>Interactive Prototypes</span>
-										<span class="animfolio-skills__value">90%</span>
-									</div>
-									<div class="animfolio-skills__bar">
-										<div class="animfolio-skills__bar-fill" style="width: 90%"></div>
-									</div>
-								</div>
-															<div class="animfolio-skills__item">
-									<div class="animfolio-skills__label">
-										<span>User Research</span>
-										<span class="animfolio-skills__value">80%</span>
-									</div>
-									<div class="animfolio-skills__bar">
-										<div class="animfolio-skills__bar-fill" style="width: 80%"></div>
-									</div>
-								</div>
-															<div class="animfolio-skills__item">
-									<div class="animfolio-skills__label">
-										<span>Motion Design</span>
-										<span class="animfolio-skills__value">75%</span>
-									</div>
-									<div class="animfolio-skills__bar">
-										<div class="animfolio-skills__bar-fill" style="width: 75%"></div>
-									</div>
-								</div>
-													</div>
-					</div>
-							</div>
-		
-	
-	</div>
-
+</div>
 
 
 	<div class="animfolio-testimonials-carousel__dots">
@@ -1294,6 +1256,67 @@ var animfolioSettings = {"animationIntensity":"medium","respectReducedMotion":"1
 
 	enhanceCards();
 	window.addEventListener('load', enhanceCards); // safety net if another script rebuilds the cards
+})();
+</script>
+<script>
+/* CV viewer: click the CV preview in About to see the page full size. */
+(function () {
+	var modal = document.getElementById('cv-modal');
+	var opener = document.getElementById('cv-open');
+	if (!modal || !opener) return;
+	var root = document.documentElement;
+	var dialog = modal.querySelector('.project-modal__dialog');
+	var closeBtn = modal.querySelector('.project-modal__close');
+	var page = modal.querySelector('.cv-modal__page');
+	var madeInert = [];
+	var pressStartedOnBackdrop = false;
+
+	function setPageInert(on) {
+		if (!on) {
+			madeInert.forEach(function (el) { el.inert = false; });
+			madeInert = [];
+			return;
+		}
+		var node = modal;
+		while (node && node !== document.body) {
+			var parent = node.parentNode;
+			Array.prototype.forEach.call(parent.children, function (el) {
+				var skip = el === node || el.id === 'animfolio-music-toggle' || /^(SCRIPT|STYLE|LINK)$/.test(el.tagName);
+				if (!skip && !el.inert) { el.inert = true; madeInert.push(el); }
+			});
+			node = parent;
+		}
+	}
+
+	function open() {
+		if (!page.getAttribute('src')) page.src = page.dataset.src; // load the big image only when needed
+		var scrollbar = window.innerWidth - root.clientWidth;
+		root.classList.add('project-modal-open');
+		if (scrollbar > 0) document.body.style.paddingRight = scrollbar + 'px';
+		setPageInert(true);
+		dialog.scrollTop = 0;
+		modal.classList.add('is-open');
+		closeBtn.focus({ preventScroll: true });
+	}
+
+	function close() {
+		if (!modal.classList.contains('is-open')) return;
+		modal.classList.remove('is-open');
+		setPageInert(false);
+		root.classList.remove('project-modal-open');
+		document.body.style.paddingRight = '';
+		opener.focus({ preventScroll: true });
+	}
+
+	opener.addEventListener('click', open);
+	closeBtn.addEventListener('click', close);
+	modal.addEventListener('mousedown', function (e) { pressStartedOnBackdrop = e.target === modal; });
+	modal.addEventListener('click', function (e) {
+		if (e.target === modal && pressStartedOnBackdrop) close();
+	});
+	document.addEventListener('keydown', function (e) {
+		if (e.key === 'Escape' && modal.classList.contains('is-open')) close();
+	});
 })();
 </script>
 </body>
