@@ -360,6 +360,9 @@ html.project-modal-open { overflow: hidden; }
 .project-modal .project-modal__placeholder svg { width: 44px; height: 44px; opacity: .7; }
 
 .project-modal .project-modal__details { display: flex; flex-direction: column; }
+.project-modal .project-modal__description { margin: 0; color: inherit; }
+/* the first visible section in the details column never gets a divider line above it */
+.project-modal .project-modal__group[hidden] + .project-modal__group { margin-top: 0; padding-top: 0; border-top: 0; }
 .project-modal .project-modal__group + .project-modal__group {
 	margin-top: 1.5rem;
 	padding-top: 1.5rem;
@@ -679,6 +682,10 @@ html.project-modal-open { overflow: hidden; }
 				<div class="project-modal__media" data-project-slot="trailer"></div>
 			</section>
 			<div class="project-modal__details">
+				<section class="project-modal__group" data-project-group="description">
+					<h3 class="project-modal__heading">Description</h3>
+					<p class="project-modal__description" data-project-slot="description"></p>
+				</section>
 				<section class="project-modal__group">
 					<h3 class="project-modal__heading">Software used</h3>
 					<div data-project-slot="software"></div>
@@ -1121,6 +1128,8 @@ var animfolioSettings = {"animationIntensity":"medium","respectReducedMotion":"1
 	var closeBtn = modal.querySelector('.project-modal__close');
 	var titleEl = modal.querySelector('.project-modal__title');
 	var trailerSlot = modal.querySelector('[data-project-slot="trailer"]');
+	var descriptionSlot = modal.querySelector('[data-project-slot="description"]');
+	var descriptionGroup = modal.querySelector('[data-project-group="description"]');
 	var softwareSlot = modal.querySelector('[data-project-slot="software"]');
 	var contributionSlot = modal.querySelector('[data-project-slot="contribution"]');
 	var linkSlot = modal.querySelector('[data-project-slot="link"]');
@@ -1259,6 +1268,11 @@ var animfolioSettings = {"animationIntensity":"medium","respectReducedMotion":"1
 
 		titleEl.textContent = title;
 		showTrailer(card.dataset.trailer, title);
+		// Description: taken from the project's <p class="animfolio-project__description"> line
+		var desc = card.querySelector('.animfolio-project__description');
+		var descText = desc ? desc.textContent.trim() : '';
+		descriptionSlot.textContent = descText;
+		descriptionGroup.hidden = !descText; // no description written → section not shown
 		showList(softwareSlot, softwareFor(card), 'Software list coming soon.');
 		showList(contributionSlot, splitList(card.dataset.contribution), 'Contribution details coming soon.');
 		showLink(card);
