@@ -510,59 +510,70 @@ html.project-modal-open { overflow: hidden; }
 }
 #about .animfolio-about__bio { grid-column: 1; grid-row: 1; align-self: end; text-align: left !important; }
 #about .animfolio-about__fun-facts { grid-column: 1; grid-row: 2; align-self: start; justify-content: flex-start !important; }
-/* ---- CV: preview + Download button under the About text ---- */
+/* ---- CV: title, preview, hint and Download button under the About text ---- */
 #about .about-cv {
 	grid-column: 1;
 	grid-row: 3;
 	align-self: start;
 	display: flex;
+	flex-direction: column;
 	align-items: center;
-	gap: 1.5rem;
-	margin-top: .5rem;
+	text-align: center;
+	margin-top: 1rem;
+}
+#about .about-cv__title {
+	margin: 0 0 1rem;
+	font-family: var(--animfolio-font-heading, Georgia, serif);
+	font-size: clamp(1.75rem, 3vw, 2.25rem);
+	font-weight: 700;
+	line-height: 1.1;
 }
 #about .about-cv__preview {
 	position: relative;
-	flex: none;
-	width: 130px;
+	width: min(220px, 60vw);
 	padding: 0;
-	border: 1px solid var(--animfolio-border-strong, rgba(0, 0, 0, .2));
-	border-radius: 8px;
-	overflow: hidden;
-	background: #fff;
+	border: 0;
+	background: none;
 	cursor: zoom-in;
-	box-shadow: 0 4px 14px rgba(0, 0, 0, .12);
-	transition: transform .2s ease, box-shadow .2s ease;
+	transition: transform .2s ease;
 }
-#about .about-cv__preview img { display: block; width: 100%; height: auto; }
-#about .about-cv__preview:hover {
-	transform: translateY(-3px);
-	box-shadow: 0 10px 26px rgba(0, 0, 0, .2);
+#about .about-cv__preview img {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: 14px;
+	border: 1px solid var(--animfolio-border-strong, rgba(0, 0, 0, .2));
+	box-shadow: 0 6px 20px rgba(0, 0, 0, .14);
+	transition: box-shadow .2s ease;
 }
+#about .about-cv__preview:hover { transform: translateY(-4px); }
+#about .about-cv__preview:hover img { box-shadow: 0 14px 34px rgba(0, 0, 0, .22); }
 #about .about-cv__preview:focus-visible {
 	outline: 3px solid var(--animfolio-accent, #E8526E);
-	outline-offset: 3px;
+	outline-offset: 4px;
+	border-radius: 14px;
 }
 #about .about-cv__zoom {
 	position: absolute;
-	right: 6px;
-	bottom: 6px;
+	right: -18px;
+	bottom: 18px;
 	display: grid;
 	place-items: center;
-	width: 30px;
-	height: 30px;
+	width: 56px;
+	height: 56px;
 	border-radius: 50%;
 	background: var(--animfolio-accent, #E8526E);
 	color: var(--animfolio-on-accent, #14110f);
-	box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+	box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
+	transition: transform .2s ease;
 }
-#about .about-cv__zoom svg { width: 16px; height: 16px; }
-#about .about-cv__title {
-	margin: 0 0 .25rem;
-	font-family: var(--animfolio-font-heading, Georgia, serif);
-	font-size: 1.25rem;
-	font-weight: 700;
+#about .about-cv__preview:hover .about-cv__zoom { transform: scale(1.08); }
+#about .about-cv__zoom svg { width: 28px; height: 28px; }
+#about .about-cv__hint {
+	margin: 1.1rem 0 1.25rem;
+	font-size: 1.15rem;
+	font-weight: 600;
 }
-#about .about-cv__hint { margin: 0 0 1rem; font-size: .95rem; opacity: .75; }
 
 @media (max-width: 768px) {
 	#about .animfolio-about { grid-template-columns: 1fr; }
@@ -920,15 +931,13 @@ html.project-modal-open { overflow: hidden; }
 					Bouldering				</div>
 					</div>
 		<div class="about-cv">
-			<button type="button" class="about-cv__preview" id="cv-open" aria-label="View my CV full screen">
+			<p class="about-cv__title">My CV</p>
+			<button type="button" class="about-cv__preview" id="cv-open" aria-label="View my CV full size">
 				<img src="./assets/images/cv-thumb.jpg" alt="" width="360" height="509" loading="lazy" decoding="async">
 				<span class="about-cv__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4M11 8v6M8 11h6"></path></svg></span>
 			</button>
-			<div class="about-cv__text">
-				<p class="about-cv__title">My CV</p>
-				<p class="about-cv__hint">Click the page to view it full size.</p>
-				<a href="./assets/docs/Misha_Kazakov_CV.pdf" download="Misha_Kazakov_CV.pdf" class="animfolio-button animfolio-button--primary">Download CV</a>
-			</div>
+			<p class="about-cv__hint">Click to see full size</p>
+			<a href="./assets/docs/Misha_Kazakov_CV.pdf" download="Misha_Kazakov_CV.pdf" class="animfolio-button animfolio-button--primary">Download CV</a>
 		</div>
 	</div>
 
