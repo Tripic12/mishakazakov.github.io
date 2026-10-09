@@ -474,6 +474,9 @@ html.project-modal-open { overflow: hidden; }
    instead of sitting centred halfway down. */
 #contact .animfolio-contact__layout { align-items: start; }
 #contact .animfolio-contact__qr-wrapper { padding-top: 0; }
+/* At least one screen tall, so "Get In Touch" (menu and main-page button) can
+   scroll the section to the top on big screens too, and the menu item lights up. */
+#contact.animfolio-section--contact { min-height: 100vh; }
 </style>
 <style id="social-icons-standout">
 /* Social icons (main page + page footer): solid fill and a pink ring so they
